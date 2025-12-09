@@ -1,0 +1,19 @@
+TEMPLATE: Functional Requirement (Standard)
+Structure: "The [System/Component] shall [Function] [Object] [Condition/Constraint]."
+Example: "The Order Management System shall calculate the total tax for the cart items when the user clicks 'Checkout'."
+
+TEMPLATE: Performance Requirement (Response Time)
+Structure: "The [System] shall respond to [Event] within [Time Metric] under [Load Condition]."
+Example: "The system shall generate the search results within 2.0 seconds under a load of 500 concurrent users."
+
+TEMPLATE: Interface Requirement (UI)
+Structure: "The [Screen/Page] shall display [Element] to enable [User Role] to [Action]."
+Example: "The Login Screen shall display a 'Forgot Password' link to enable Unauthenticated Users to recover their account."
+
+TEMPLATE: Reliability Requirement
+Structure: "The system shall have an availability of [Percentage]% over a [Time Period]."
+Example: "The Payment Gateway shall have an availability of 99.99% over any 30-day period."
+
+TEMPLATE: Security Requirement (Access Control)
+Structure: "The system shall restrict access to [Resource] to users with [Role] permissions only."
+Example: "The system shall restrict access to the Admin Dashboard to users with 'Administrator' permissions only."

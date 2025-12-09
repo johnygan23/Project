@@ -1,0 +1,30 @@
+[
+  {
+    "term": "Availability",
+    "definition": "The degree to which a system or component is operational and accessible when required for use. Often expressed as a percentage (e.g., 99.9%)."
+  },
+  {
+    "term": "Latency",
+    "definition": "The time interval between the stimulation and response, or, more generally, the time delay between the cause and the effect of some physical change in the system being observed."
+  },
+  {
+    "term": "MTBF (Mean Time Between Failures)",
+    "definition": "The predicted elapsed time between inherent failures of a mechanical or electronic system during normal system operation."
+  },
+  {
+    "term": "Scalability",
+    "definition": "The capability of a system, network, or process to handle a growing amount of work, or its potential to be enlarged to accommodate that growth."
+  },
+  {
+    "term": "Verifiability",
+    "definition": "A property of a requirement indicating that there exists a finite, cost-effective process with which a person or machine can check that the software product meets the requirement."
+  },
+  {
+    "term": "Stakeholder",
+    "definition": "An individual, group, or organization who may affect, be affected by, or perceive itself to be affected by a decision, activity, or outcome of a project."
+  },
+  {
+    "term": "Atomic Requirement",
+    "definition": "A requirement that contains a single, coherent thought and cannot be broken down further without losing its meaning."
+  }
+]

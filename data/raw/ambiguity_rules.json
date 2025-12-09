@@ -1,0 +1,34 @@
+[
+  {
+    "rule_id": "R01",
+    "category": "Vague Quantifiers",
+    "description": "Avoid words that are subjective and cannot be measured.",
+    "bad_examples": ["fast", "quick", "instant", "efficient", "adequate"],
+    "good_examples": ["< 200ms", "within 5 seconds", "3 transactions per second"],
+    "correction_strategy": "Replace the vague adjective with a specific numeric metric or SLA reference."
+  },
+  {
+    "rule_id": "R02",
+    "category": "Passive Voice",
+    "description": "Passive voice obscures who or what is performing the action.",
+    "bad_examples": ["The data is saved.", "The report is generated."],
+    "good_examples": ["The System shall save the data.", "The Backend Service shall generate the report."],
+    "correction_strategy": "Identify the actor (System, User, Module) and make them the subject of the sentence."
+  },
+  {
+    "rule_id": "R03",
+    "category": "Subjective Language",
+    "description": "Avoid marketing terms or opinions.",
+    "bad_examples": ["user-friendly", "seamless", "easy to use", "modern interface"],
+    "good_examples": ["maximum of 3 clicks", "consistent with Style Guide V2.0"],
+    "correction_strategy": "Define the constraint in verifiable terms (e.g., number of clicks, compliance with a standard)."
+  },
+  {
+    "rule_id": "R04",
+    "category": "Compound Requirements",
+    "description": "Avoid combining multiple requirements into one sentence using 'and' or 'or'.",
+    "bad_examples": ["The system shall save the user profile and send a confirmation email."],
+    "good_examples": ["The system shall save the user profile.", "The system shall send a confirmation email."],
+    "correction_strategy": "Split the sentence into two separate atomic requirements."
+  }
+]

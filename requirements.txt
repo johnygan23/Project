@@ -1,0 +1,10 @@
+streamlit
+torch
+transformers
+sentence-transformers
+chromadb
+rank_bm25
+google-generativeai
+python-dotenv
+pandas
+pymupdf
