@@ -1,9 +1,11 @@
 import streamlit as st
 import os
+import re
+import time
 from dotenv import load_dotenv
 from src.detection import AmbiguityDetector
 from src.resolution import ResolutionPipeline
-from ingest import load_initial_knowledge, parse_file
+from src.ingestion import load_initial_knowledge, parse_file
 
 # --- CONFIGURATION ---
 STATIC_KNOWLEDGE_PATH = "./data/static_knowledge"
@@ -22,10 +24,8 @@ st.set_page_config(page_title="SRS Guard", layout="wide")
 def load_models():
     """
     Loads both the Detection Model (CPU) and Resolution Pipeline (API).
-    Cached to prevent reloading on every interaction.
     """
     # 1. Load Detection (DeBERTa)
-    # Ensure you have the model folder at ./models/deberta_classifier
     detector = AmbiguityDetector(model_path=DETECTION_MODEL_PATH)
     
     # 2. Load Resolution (Gemini + ChromaDB)
@@ -38,13 +38,20 @@ def load_models():
     
     # 3. Check/Load Static Knowledge (First Run)
     if resolver.collection.count() == 0:
-        print("⚡ DB is empty. Loading Static Knowledge...")
         docs, ids, metas = load_initial_knowledge(STATIC_KNOWLEDGE_PATH)
         if docs:
             resolver.add_knowledge(docs, ids, metas)
-            print(f"✅ Loaded {len(docs)} static documents.")
             
     return detector, resolver
+
+def split_sentences(text):
+    """
+    Splits text into sentences using regex.
+    Matches periods/questions/exclamations followed by space or end of line.
+    """
+    # This regex looks for sentence terminators (.?!) followed by a space or end-of-string
+    sentences = re.split(r'(?<=[.?!])\s+', text)
+    return [s.strip() for s in sentences if s.strip()]
 
 # Initialize Everything
 with st.spinner("🚀 Starting AI Engines..."):
@@ -52,6 +59,14 @@ with st.spinner("🚀 Starting AI Engines..."):
 
 # --- SIDEBAR: KNOWLEDGE MANAGEMENT ---
 with st.sidebar:
+    st.header("⚙️ Settings")
+    
+    # Toggle for Explanation
+    show_explanation = st.toggle("Show AI Explanation", value=True, 
+                                 help="Turn off to get just the rewritten text.")
+
+    st.divider()
+    
     st.header("📚 Knowledge Base")
     
     # File Uploader
@@ -66,12 +81,10 @@ with st.sidebar:
             with st.spinner("Ingesting files..."):
                 new_docs_count = 0
                 for uploaded_file in uploaded_files:
-                    # Save locally
                     save_path = os.path.join(UPLOAD_DIR, uploaded_file.name)
                     with open(save_path, "wb") as f:
                         f.write(uploaded_file.getbuffer())
                     
-                    # Parse & Add
                     docs, ids, metas = parse_file(save_path)
                     if docs:
                         resolver.add_knowledge(docs, ids, metas)
@@ -79,63 +92,64 @@ with st.sidebar:
                 
                 if new_docs_count > 0:
                     st.success(f"Successfully added {new_docs_count} chunks!")
-                else:
-                    st.warning("No valid text found in files.")
 
     st.divider()
     if resolver:
         st.caption(f"Total Documents in DB: {resolver.collection.count()}")
 
 # --- MAIN UI ---
-st.title("🛡️ SRS Ambiguity Guard")
-st.markdown("Enter a software requirement below. The system will first **check for ambiguity**, and if found, use **RAG** to suggest a fix.")
+st.title("🛡️ SRS Ambiguity Guard (Bulk Mode)")
+st.markdown("Enter multiple requirements below. The system will analyze them **sentence-by-sentence**.")
 
-text_input = st.text_area("Requirement to Analyze:", height=100)
+text_input = st.text_area("Input Requirements (Paragraph):", height=150, placeholder="The system should be fast. The login screen must display a welcome message.")
 
-if st.button("Analyze & Resolve", type="primary"):
+if st.button("Analyze Batch", type="primary"):
     if not text_input:
-        st.warning("Please enter a requirement.")
+        st.warning("Please enter text.")
     else:
-        # --- STAGE A: DETECTION ---
-        with st.spinner("🔍 Scanning for ambiguity..."):
-            # Call the Detector Class
-            label, score = detector.predict(text_input)
+        # 1. Split Input
+        sentences = split_sentences(text_input)
+        st.info(f"Processing {len(sentences)} sentence(s)...")
         
-        # --- LOGIC BRANCH ---
-        # Note: Check your specific model labels. 
-        # Sometimes DeBERTa outputs "LABEL_0" (Clear) and "LABEL_1" (Ambiguous)
-        if label in ["Clear", "Clean", "LABEL_0"]:
-            st.success(f"✅ **Requirement is Clear** (Confidence: {score:.2%})")
-            st.balloons()
+        progress_bar = st.progress(0)
+        
+        # 2. Process Loop
+        for idx, sentence in enumerate(sentences):
+            # Update Progress
+            progress_bar.progress((idx + 1) / len(sentences))
             
-        else:
-            st.error(f"⚠️ **Ambiguity Detected** (Confidence: {score:.2%})")
-            
-            # --- STAGE B: RESOLUTION ---
-            if resolver:
-                with st.spinner("🧠 Consulting Knowledge Base & Rewriting..."):
-                    rewrite, evidence = resolver.resolve_ambiguity(text_input)
+            # Create a container for each sentence
+            with st.container():
+                st.markdown(f"### Requirement {idx+1}")
+                st.text(sentence)
                 
-                # Display Results
-                col1, col2 = st.columns(2)
+                # A. Detection
+                label, score = detector.predict(sentence)
                 
-                with col1:
-                    st.subheader("💡 Suggested Rewrite")
-                    st.info(rewrite)
+                # B. Logic Branch
+                if label in ["Clear", "Clean", "LABEL_0"]:
+                    st.success(f"✅ **Clear** (Confidence: {score:.2%})")
+                else:
+                    st.error(f"⚠️ **Ambiguity Detected** (Confidence: {score:.2%})")
                     
-                with col2:
-                    st.subheader("📚 Evidence Used")
-                    for item in evidence:
-                        source = item.get('source', 'Unknown')
-                        type_ = item.get('type', 'General').upper()
-                        # Handle location logic
-                        if 'page' in item: loc = f"Page {item['page']}"
-                        elif 'row' in item: loc = f"Row {item['row']}"
-                        elif 'item' in item: loc = f"Item {item['item']}"
-                        elif 'chunk' in item: loc = f"Chunk {item['chunk']}"
-                        else: loc = "Full Doc"
-                            
-                        with st.expander(f"{source} ({type_})"):
-                            st.caption(f"Location: {loc}")
-            else:
-                st.error("Resolution engine is not loaded. Check API Key.")
+                    # C. Resolution (Only if Ambiguous)
+                    if resolver:
+                        with st.spinner(f"Resolving req {idx+1}..."):
+                            rewrite, evidence = resolver.resolve_ambiguity(sentence, include_explanation=show_explanation)
+                        
+                        # Display Rewrite
+                        st.markdown("**💡 Suggested Rewrite:**")
+                        st.info(rewrite)
+                        
+                        # Display Evidence
+                        with st.expander("🔍 View Retrieved Context"):
+                            for item in evidence:
+                                source = item.get('source', 'Unknown')
+                                type_ = item.get('type', 'General').upper()
+                                if 'page' in item: loc = f"Page {item['page']}"
+                                elif 'row' in item: loc = f"Row {item['row']}"
+                                else: loc = "N/A"
+                                    
+                                st.markdown(f"**{source}** ({type_}) - `{loc}`")
+                                
+            st.divider() # Visual separation between sentences

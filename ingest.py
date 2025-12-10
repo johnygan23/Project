@@ -1,65 +1,25 @@
 import os
-import json
-import fitz  # PyMuPDF
-import pandas as pd
+from dotenv import load_dotenv
+from src.resolution import ResolutionPipeline
+# IMPORT THE LOGIC FROM SRC
+from src.ingestion import load_initial_knowledge 
 
-def parse_file(file_path):
-    """
-    Parses a SINGLE file and returns documents, ids, metadatas.
-    """
-    documents, metadatas, ids = [], [], []
-    filename = os.path.basename(file_path)
-    
-    try:
-        # --- PDF ---
-        if filename.endswith(".pdf"):
-            doc = fitz.open(file_path)
-            for i, page in enumerate(doc):
-                text = page.get_text()
-                if len(text) > 50:
-                    documents.append(text)
-                    metadatas.append({"source": filename, "page": i+1, "type": "pdf"})
-                    ids.append(f"{filename}_pg{i+1}")
+# 1. Setup
+load_dotenv()
+API_KEY = os.getenv("GEMINI_API_KEY")
+DB_PATH = "./data/rag_db"
+STATIC_PATH = "./data/raw" 
 
-        # --- JSON (Glossary) ---
-        elif filename.endswith(".json"):
-            with open(file_path, "r") as f:
-                data = json.load(f)
-                items = data if isinstance(data, list) else data.get("items", [])
-                for idx, item in enumerate(items):
-                    text = str(item)
-                    documents.append(text)
-                    metadatas.append({"source": filename, "item": idx, "type": "glossary"})
-                    ids.append(f"{filename}_item_{idx}")
+# 2. Initialize Pipeline
+print("🚀 Starting Ingestion...")
+resolver = ResolutionPipeline(vector_db_path=DB_PATH, api_key=API_KEY)
 
-        # --- TXT/MD (Templates) ---
-        elif filename.endswith(".txt") or filename.endswith(".md"):
-            with open(file_path, "r") as f:
-                content = f.read()
-                # Simple chunking by 1000 chars
-                for i in range(0, len(content), 1000):
-                    documents.append(content[i:i+1000])
-                    metadatas.append({"source": filename, "type": "template"})
-                    ids.append(f"{filename}_chunk_{i}")
+# 3. Load & Ingest
+print(f"📂 Scanning {STATIC_PATH}...")
+docs, ids, metas = load_initial_knowledge(STATIC_PATH)
 
-    except Exception as e:
-        print(f"Error parsing {filename}: {e}")
-
-    return documents, ids, metadatas
-
-def load_initial_knowledge(folder_path):
-    """Scans a folder and returns all data (Used for Static Knowledge)."""
-    all_docs, all_ids, all_metas = [], [], []
-    
-    if not os.path.exists(folder_path):
-        return [], [], []
-
-    for filename in os.listdir(folder_path):
-        file_path = os.path.join(folder_path, filename)
-        if os.path.isfile(file_path):
-            docs, ids, metas = parse_file(file_path)
-            all_docs.extend(docs)
-            all_ids.extend(ids)
-            all_metas.extend(metas)
-            
-    return all_docs, all_ids, all_metas
+if docs:
+    resolver.add_knowledge(docs, ids, metas)
+    print(f"🎉 Successfully ingested {len(docs)} documents into {DB_PATH}")
+else:
+    print("⚠️ No documents found to ingest.")
