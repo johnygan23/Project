@@ -13,23 +13,20 @@ def render_sidebar(resolver, upload_dir):
         
         # Detection Settings
         with st.expander("🔍 Detection Settings", expanded=False):
-            confidence_threshold = st.slider(
-                "Confidence Threshold",
-                min_value=0.0,
-                max_value=1.0,
-                value=0.5,
-                step=0.05,
-                help="Lower values = more sensitive detection"
-            )
             show_confidence_scores = st.toggle("Show Confidence Scores", value=True)
         
         # Resolution Settings
         with st.expander("✏️ Resolution Settings", expanded=False):
-            show_explanation = st.toggle("Show AI Explanation", value=True, 
-                                         help="Turn off to get just the rewritten text.")
-            max_evidence_items = st.number_input("Max Evidence Items", 1, 10, 5)
-            comparison_view = st.toggle("Side-by-Side Comparison", value=False,
-                                        help="Show original and rewrite side-by-side")
+            show_explanation = st.toggle(
+                "Show AI Explanation",
+                value=True,
+                help="Turn off to get just the rewritten text."
+            )
+            comparison_view = st.toggle(
+                "Side-by-Side Comparison",
+                value=False,
+                help="Show original and rewrite side-by-side"
+            )
         
         st.divider()
         
@@ -110,9 +107,7 @@ def render_sidebar(resolver, upload_dir):
         # Return settings
         return {
             'show_explanation': show_explanation,
-            'max_evidence_items': max_evidence_items,
             'comparison_view': comparison_view,
             'show_confidence_scores': show_confidence_scores,
-            'confidence_threshold': confidence_threshold
         }
 

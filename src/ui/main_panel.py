@@ -53,7 +53,7 @@ def render_action_buttons():
     col1, col2, col3, col4 = st.columns([2, 1, 1, 1])
     
     with col1:
-        analyze_btn = st.button("🔍 Analyze Batch", type="primary", use_container_width=True)
+        analyze_btn = st.button("🔍 Analyse Software Requirements", type="primary", use_container_width=True)
     with col2:
         clear_btn = st.button("🗑️ Clear Results", use_container_width=True)
     with col3:

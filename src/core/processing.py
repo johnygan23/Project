@@ -69,11 +69,13 @@ def process_requirements(detector, resolver, text_input, settings):
                 if resolver:
                     try:
                         rewrite, evidence = resolver.resolve_ambiguity(
-                            sentence, 
+                            sentence,
                             include_explanation=settings['show_explanation']
                         )
                         result['rewrite'] = rewrite
-                        result['evidence'] = evidence[:settings['max_evidence_items']] if evidence else []
+                        # Use a fixed number of evidence items to display
+                        max_evidence_items = 5
+                        result['evidence'] = evidence[:max_evidence_items] if evidence else []
                     except Exception as e:
                         st.error(f"❌ Resolution failed for requirement {idx+1}: {str(e)}")
                         result['rewrite'] = f"Error: {str(e)}"
