@@ -1,4 +1,3 @@
 .env
 models/deberta_classifier/
-DOCUMENT_REVIEW.md
-IMPROVEMENTS_SUMMARY.md
+texts
