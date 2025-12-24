@@ -30,5 +30,93 @@
     "bad_examples": ["The system shall save the user profile and send a confirmation email."],
     "good_examples": ["The system shall save the user profile.", "The system shall send a confirmation email."],
     "correction_strategy": "Split the sentence into two separate atomic requirements."
+  },
+  {
+    "rule_id": "R05",
+    "category": "Missing Actor",
+    "description": "Requirements that do not specify who or what performs the action.",
+    "bad_examples": ["The login must be validated.", "Data should be encrypted."],
+    "good_examples": ["The Authentication Service shall validate user credentials during login.", "The System shall encrypt all sensitive data using AES-256."],
+    "correction_strategy": "Explicitly state the actor (System, User, specific component) that performs the action."
+  },
+  {
+    "rule_id": "R06",
+    "category": "Temporal Ambiguity",
+    "description": "Unclear timing, sequence, or duration of actions.",
+    "bad_examples": ["The system should update the database.", "Users can access reports after login."],
+    "good_examples": ["The system shall update the database within 100ms of receiving the transaction.", "Users shall be able to access reports immediately after successful authentication."],
+    "correction_strategy": "Specify exact timing (when, how long, sequence) or use precise temporal markers (immediately, within X seconds, after event Y)."
+  },
+  {
+    "rule_id": "R07",
+    "category": "Undefined Terms",
+    "description": "Using domain-specific terms, acronyms, or concepts without definition.",
+    "bad_examples": ["The system must comply with GDPR.", "The API should use RESTful principles."],
+    "good_examples": ["The system shall comply with GDPR (General Data Protection Regulation) requirements for data privacy.", "The API shall follow REST (Representational State Transfer) architectural principles with stateless communication."],
+    "correction_strategy": "Define acronyms on first use, provide context for domain terms, or reference a glossary entry."
+  },
+  {
+    "rule_id": "R08",
+    "category": "Vague Conditions",
+    "description": "Unclear conditions, triggers, or circumstances under which requirement applies.",
+    "bad_examples": ["The system should handle errors gracefully.", "Backup should occur regularly."],
+    "good_examples": ["The system shall display user-friendly error messages and log technical details when any API call returns HTTP status 4xx or 5xx.", "The system shall perform automated database backups daily at 2:00 AM UTC."],
+    "correction_strategy": "Specify exact conditions, triggers, thresholds, or scenarios that activate the requirement."
+  },
+  {
+    "rule_id": "R09",
+    "category": "Relative Comparisons",
+    "description": "Using relative terms without a baseline or reference point.",
+    "bad_examples": ["The new system should be faster.", "The interface should be simpler."],
+    "good_examples": ["The new system shall process transactions 50% faster than the legacy system (reducing average response time from 500ms to 250ms).", "The interface shall reduce the number of user actions required to complete checkout from 5 steps to 2 steps."],
+    "correction_strategy": "Provide a baseline for comparison or use absolute metrics instead of relative terms."
+  },
+  {
+    "rule_id": "R10",
+    "category": "Missing Constraints",
+    "description": "Requirements that lack necessary constraints, limits, or boundaries.",
+    "bad_examples": ["The system should support multiple users.", "The database can store user data."],
+    "good_examples": ["The system shall support up to 10,000 concurrent users with response time degradation not exceeding 20%.", "The database shall store user profile data with a maximum record size of 5MB per user."],
+    "correction_strategy": "Add explicit constraints: maximum values, limits, boundaries, or acceptable ranges."
+  },
+  {
+    "rule_id": "R11",
+    "category": "Ambiguous Scope",
+    "description": "Unclear what parts of the system or which components are affected.",
+    "bad_examples": ["The system needs better security.", "Performance should be improved."],
+    "good_examples": ["The Authentication Module shall implement multi-factor authentication (MFA) for all admin accounts.", "The Search Service shall return results within 200ms for queries on datasets up to 1 million records."],
+    "correction_strategy": "Specify the exact component, module, feature, or subsystem to which the requirement applies."
+  },
+  {
+    "rule_id": "R12",
+    "category": "Modal Verb Ambiguity",
+    "description": "Using weak modal verbs (should, could, might) instead of mandatory language (shall, must).",
+    "bad_examples": ["The system should validate input.", "Users could export data."],
+    "good_examples": ["The system shall validate all user input before processing.", "The system shall enable authenticated users to export their data in CSV format."],
+    "correction_strategy": "Use 'shall' for mandatory requirements, 'should' only for recommendations, and 'may' for optional features."
+  },
+  {
+    "rule_id": "R13",
+    "category": "Incomplete Exception Handling",
+    "description": "Requirements that don't specify behavior under error or exception conditions.",
+    "bad_examples": ["The system processes payments.", "Users can upload files."],
+    "good_examples": ["The system shall process payments and, if payment fails, shall display error code P001 and log the transaction attempt.", "Users shall be able to upload files up to 10MB; if upload fails, the system shall display a specific error message and allow retry."],
+    "correction_strategy": "Explicitly state what happens in error cases, timeouts, or exception scenarios."
+  },
+  {
+    "rule_id": "R14",
+    "category": "Vague User Roles",
+    "description": "Unclear which user roles or personas the requirement applies to.",
+    "bad_examples": ["Users can access reports.", "The system allows data modification."],
+    "good_examples": ["Administrators and Managers shall be able to access financial reports; Regular Users shall not have access.", "Only users with 'Editor' role shall be able to modify data; 'Viewer' role users shall have read-only access."],
+    "correction_strategy": "Explicitly specify user roles, permissions, or user types affected by the requirement."
+  },
+  {
+    "rule_id": "R15",
+    "category": "Unverifiable Requirements",
+    "description": "Requirements that cannot be tested or verified objectively.",
+    "bad_examples": ["The system should feel responsive.", "The design should be intuitive."],
+    "good_examples": ["The system shall respond to user interactions within 100ms, measured at the 95th percentile.", "The interface shall allow users to complete the primary task (user registration) in 3 clicks or fewer, as measured in usability testing."],
+    "correction_strategy": "Convert subjective qualities into measurable, testable criteria with specific metrics or acceptance tests."
   }
 ]

@@ -26,5 +26,77 @@
   {
     "term": "Atomic Requirement",
     "definition": "A requirement that contains a single, coherent thought and cannot be broken down further without losing its meaning."
+  },
+  {
+    "term": "Functional Requirement",
+    "definition": "A requirement that specifies what the system shall do, describing a function or behavior that the system must perform."
+  },
+  {
+    "term": "Non-Functional Requirement",
+    "definition": "A requirement that specifies how well the system performs its functions, including quality attributes such as performance, security, usability, and reliability."
+  },
+  {
+    "term": "Use Case",
+    "definition": "A description of a sequence of interactions between a system and an actor (user or external system) that results in an outcome of value to the actor."
+  },
+  {
+    "term": "User Story",
+    "definition": "A brief, simple description of a feature told from the perspective of the user, typically following the format: 'As a [user type], I want [goal] so that [benefit].'"
+  },
+  {
+    "term": "Acceptance Criteria",
+    "definition": "Conditions that must be satisfied for a requirement or user story to be considered complete and acceptable to stakeholders."
+  },
+  {
+    "term": "SRS (Software Requirements Specification)",
+    "definition": "A document that describes the functional and non-functional requirements for a software system, serving as a contract between stakeholders and developers."
+  },
+  {
+    "term": "Traceability",
+    "definition": "The ability to track requirements from their origin through development, testing, and deployment, linking requirements to design, code, and test cases."
+  },
+  {
+    "term": "Ambiguity",
+    "definition": "A property of a requirement that allows multiple interpretations, making it unclear what the requirement actually means or how it should be implemented."
+  },
+  {
+    "term": "Completeness",
+    "definition": "A quality attribute of requirements indicating that all necessary information is present and nothing essential is missing."
+  },
+  {
+    "term": "Consistency",
+    "definition": "A quality attribute of requirements indicating that requirements do not conflict with each other and use terminology consistently throughout."
+  },
+  {
+    "term": "Testability",
+    "definition": "A property of a requirement indicating that it can be verified through testing, with clear, measurable criteria for success or failure."
+  },
+  {
+    "term": "Modifiability",
+    "definition": "The ease with which a system can be changed to accommodate new requirements or modify existing ones without excessive cost or effort."
+  },
+  {
+    "term": "Performance Requirement",
+    "definition": "A non-functional requirement that specifies quantitative measures of system behavior, such as response time, throughput, or resource utilization."
+  },
+  {
+    "term": "Security Requirement",
+    "definition": "A requirement that specifies how the system shall protect data, resources, and services from unauthorized access, modification, or destruction."
+  },
+  {
+    "term": "Usability Requirement",
+    "definition": "A non-functional requirement that specifies how easy the system is to learn, use, and remember, often measured by task completion time or error rates."
+  },
+  {
+    "term": "Reliability Requirement",
+    "definition": "A non-functional requirement that specifies the system's ability to perform required functions under stated conditions for a specified period of time."
+  },
+  {
+    "term": "Maintainability",
+    "definition": "The ease with which a software system can be modified to correct faults, improve performance, adapt to a changed environment, or enhance functionality."
+  },
+  {
+    "term": "Portability",
+    "definition": "The ease with which a software system can be transferred from one hardware or software environment to another."
   }
 ]
